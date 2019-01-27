@@ -1,0 +1,360 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\colortbl ;\red0\green0\blue255;}
+{\*\generator Riched20 6.3.9600}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\f0\fs22\lang9 README\par
+This package contains files necessary to run a game of Connect 4.\par
+\tab Files in this code distribution:\par
+\tab\tab - AIPlayer\par
+\tab\tab - Connect4\par
+\tab\tab - Player\par
+\tab\tab - JBox\par
+\tab\tab - JCanvas\par
+\tab\tab - JEventQueue\par
+\par
+Installation\par
+\tab Open and compile the .java files in a Java Integrated Development Environment (e.g., Dr. Java, Eclipse, NetBeans, etc.). To play the game, run the Connect4 class.\par
+\par
+AIPlayer\par
+\tab AIPlayer is an artificial intelligence player for Connect4 that implements the Player interface. It uses the MiniMax algorithm to choose its moves. Methods in this class were inspired by methods in the class TicTacToe by Wayne Snyder (waynsnyder@gmail.com).\par
+\par
+minMax()\par
+\tab The method minMax() uses recursive backtracking and the MiniMax algorithm to make a move decision. The goal of this algorithm is to minimize loss in a potential scenario.\par
+\tab Pseudocode and further explanation of the MiniMax algorithm can be found at {{\field{\*\fldinst{HYPERLINK http://en.wikipedia.org/wiki/Minimax#Pseudocode }}{\fldrslt{http://en.wikipedia.org/wiki/Minimax#Pseudocode\ul0\cf0}}}}\f0\fs22 .\par
+\par
+evalHelper()\par
+\tab The method evalHelper() is designed to minimize code repetition in the method eval(), as some steps were repeated. This provides for more comprehensible code. However, it may slightly negatively impact time efficiency.\par
+\par
+Other bugs\par
+\tab Though the method move() in AIPlayer prioritizes winning moves and blocking losing moves, it can only handle this effectively if there are three consecutive pieces of the same color. This method is also desigend to first check each row for three consecutive pieces of the same color and place a piece to either complete the set and win or block the set from one of the sides. However, this method appears to not always work.\par
+\par
+\par
+Contact & Acknowledgements\par
+\tab AIPlayer class: Ifteda Ahmed-Syed (iftedanas@gmail.com)\par
+\tab Connect 4 class: - Ashley Hansberry (Ashley_Hansberry@loomis.org)\par
+\tab\tab\tab\tab   - Wayn Snyder (waynsnyder@gmail.com)\par
+\tab Player interface: Ashley Hansberry (Ashley_Hansberry@loomis.org)\par
+\tab JBox, JCanvas, & JEventQueue: Mads Rosendahl (madsr@ruc.dk)\par
+Rough pseudocode used for eval() found at {{\field{\*\fldinst{HYPERLINK http://stackoverflow.com/questions/10985000/how-should-i-design-a-good-evaluation-function-for-connect-4?rq=1 }}{\fldrslt{http://stackoverflow.com/questions/10985000/how-should-i-design-a-good-evaluation-function-for-connect-4?rq=1\ul0\cf0}}}}\f0\fs22 .\par
+\par
+/** AIPlayer.java:\par
+  * Artificial intelligence (decision-maker for machine/computer player).\par
+  * Implements Player interface.\par
+  * \par
+  * @auther Ifteda Ahmed-Syed (iftedanas@gmail.com)\par
+  * Date: 05-21-2015\par
+  */\par
+\par
+public class AIPlayer implements Player\par
+\{\par
+  private final static int Inf = Integer.MAX_VALUE; \par
+  \par
+  /* Checks each available space in board B\par
+   * Decides a move using method minMax()\par
+   * Prioritizes winning move or blocking losing move.\par
+   * @param int[][] B: playing board\par
+   * @return int: column index\par
+   */\par
+  public int move(int[][] B)\par
+  \{\par
+    //choosing winning or blocking losing moves\par
+    //by row (from top)\par
+    for(int row = 0; row < B.length; row++)\par
+    \{\par
+      for(int col = 0; col < B[0].length - 3; col++)\par
+      \{\par
+        int set = B[row][col] + B[row][col+1] + B[row][col+2];\par
+        if(set == 30 || set == 3)\par
+        \{\par
+          if( col != 0 && B[row][col-1] == 0)\par
+          \{\par
+            return col - 1;\par
+          \}\par
+          if(B[row][col+3] ==0)\par
+          \{\par
+            return col + 3;\par
+          \}\par
+        \}\par
+      \}\par
+    \}\par
+    //by column (from left)\par
+    for(int col = 0; col < B.length; col++)\par
+    \{\par
+      for(int row = 0; row < B.length - 3; row++)\par
+      \{\par
+        int set = B[row][col] + B[row+1][col] + B[row+2][col];\par
+        if(set == 30 || set == 3)\par
+        \{\par
+          if(row != 0 && B[row-1][col] == 0)\par
+          \{\par
+            return col - 1;\par
+          \}\par
+          if(B[row+3][col] ==0)\par
+          \{\par
+            return col + 3;\par
+          \}\par
+        \}\par
+      \}\par
+    \}\par
+    //by daigonal (from top left)\par
+    for(int row = 0; row < B.length - 3; row++)\par
+    \{\par
+      for(int col = 0; col < B[0].length - 3; col++)\par
+      \{\par
+        int set = B[row][col] + B[row+1][col+1] + B[row+2][col+2];\par
+        if(set == 30 || set == 3)\par
+        \{\par
+          if(row != 0 && col != 0 && B[row-1][col-1] == 0)\par
+          \{\par
+            return col - 1;\par
+          \}\par
+          if( B[row+3][col+3] ==0)\par
+          \{\par
+            return col + 3;\par
+          \}\par
+        \}\par
+      \}\par
+    \}\par
+    //by diagonal (from bottom left)\par
+    for(int row = B.length - 1; row > 3; row--)\par
+    \{\par
+      for(int col = 0; col < B[0].length - 3; col++)\par
+      \{\par
+        int set = B[row][col] + B[row-1][col+1] + B[row-2][col+2];\par
+        if(set == 30 || set == 3)\par
+        \{\par
+          if(row != B.length - 1 && col != 0 && B[row+1][col-1] == 0)\par
+          \{\par
+            return col - 1;\par
+          \}\par
+          if(B[row-3][col+3] ==0)\par
+          \{\par
+            return col + 3;\par
+          \}\par
+        \}\par
+      \}\par
+    \}\par
+    \par
+    int max = -Inf;     \par
+    int bestMove = -1;\par
+    int length = B.length;\par
+    int width = B[0].length;\par
+    for(int move = 0; move < (length * width); ++move)\par
+    \{ \par
+      if(B[move/length][move%width] == 0) //move/length gets row, move%width gets length\par
+      \{   // if move is available         //such that move would equal the index if B were a single long 1-dimensional array\par
+                \par
+        B[move/length][move%width] = 8;       // make the move\par
+                \par
+        int val = minMax( B, 1 ); \par
+                \par
+        if(val > max)           // if evaluation of B through minMax(B, 1) is better than current board\par
+        \{                       // if better move, save it\par
+          bestMove = move; \par
+          max = val; \par
+        \}\par
+                \par
+        B[move/length][move%width] = 0;        // undo the move\par
+                \par
+      \}  \par
+    \}  \par
+    return bestMove % width; //return column \par
+  \} \par
+  \par
+  /* Recursive method.\par
+   * If depth is even, evaluates to find max.\par
+   * If depth is odd, evaluates to find min.\par
+   * Evaluates only up to a limited depth.\par
+   * @param int[][] B: playing board\par
+   * @param depth: number of moves from current board\par
+   * @return int: max or min\par
+   */\par
+  public static int minMax(int[][] B, int depth)\par
+  \{\par
+    int length = B.length;\par
+    int width = B[0].length;\par
+    if(eval(B) == Inf || eval(B) == -Inf || depth == 5)  //if winning or losing board, or depth limit reached\par
+    \{\par
+      return eval(B); \par
+    \}\par
+    else if( depth % 2 == 0 )\par
+    \{       // even level of depth is max mode, AI player           \par
+      int max = -Inf; \par
+      for(int move = 0; move < length * width; ++move)\par
+      \{\par
+        if(B[move/length][move%width] == 0)\par
+        \{   // if move is available\par
+          B[move/length][move%width] = 10;       // make the move   \par
+                    \par
+          int val = minMax( B, depth + 1 );  //recursion\par
+                    \par
+          if(val > max)\par
+          \{\par
+            max = val; \par
+          \}\par
+                    \par
+          B[move/length][move%width] = 0;       // undo the move and try next move (for loop increments)\par
+        \}\par
+      \}  \par
+      return max; \par
+    \} \par
+    else \par
+    \{                         // odd level of depth is min node, human player\par
+      int min = 1000; \par
+      for(int move = 0; move < 9; ++move)\par
+      \{\par
+        if(B[move/length][move%width] == 0)\par
+        \{   // if move is available\par
+                    \par
+          B[move/length][move%width] = 1;       // make the move  \par
+                    \par
+          int val = minMax( B, depth + 1 );  //recursion\par
+                    \par
+          if(val < min)\par
+          \{ \par
+            min = val; \par
+          \}\par
+                    \par
+          B[move/length][move%width] = 0;       // undo the move and try next move (for loop increments)  \par
+        \}\par
+      \}\par
+      return min;\par
+    \}\par
+  \}\par
+  \par
+  /* Rates bored based on number of red and blue pieces and possibilities to win.\par
+   * @param int[][] B: playing board\par
+   * @return int: rating for board\par
+   * Rough pseudocode found @ {{\field{\*\fldinst{HYPERLINK http://stackoverflow.com/questions/10985000/how-should-i-design-a-good-evaluation-function-for-connect-4?rq=1 }}{\fldrslt{http://stackoverflow.com/questions/10985000/how-should-i-design-a-good-evaluation-function-for-connect-4?rq=1\ul0\cf0}}}}\f0\fs22 .\par
+   */\par
+  public static int eval(int[][] B)\par
+  \{  \par
+    //check if there is a draw\par
+    int notBlank = 0; //counts how many spaces are not empty\par
+    int counter = 0; //counts total number of spaces\par
+    for(int[] row: B)\par
+    \{\par
+      for(int space: row)\par
+      \{\par
+        if(space != 0) //if space is full\par
+        \{\par
+          notBlank++;\par
+        \}\par
+        counter++;\par
+      \}\par
+    \}\par
+    if(notBlank == counter) //if board is full\par
+    \{\par
+      return 0; //draw\par
+    \}\par
+    \par
+    \par
+    int sum = 0;\par
+    \par
+    //evaluate by row (from top)\par
+    for(int row = 0; row < B.length; row++)\par
+    \{\par
+      for(int col = 0; col < B[0].length - 3; col++)\par
+      \{\par
+        int set = B[row][col] + B[row][col+1] + B[row][col+2] + B[row][col+3];\par
+        int result = evalHelper(B, set, row, col);\par
+        if(result == Inf || result == -Inf)\par
+        \{\par
+          return result;\par
+        \}\par
+        else\par
+        \{\par
+          sum += result;\par
+        \}\par
+      \}\par
+    \}\par
+    \par
+    //evaluate by column (from left)\par
+    for(int col = 0; col < B.length; col++)\par
+    \{\par
+      for(int row = 0; row < B.length - 3; row++)\par
+      \{\par
+        int set = B[row][col] + B[row+1][col] + B[row+2][col] + B[row+3][col];\par
+        int result = evalHelper(B, set, row, col);\par
+        if(result == Inf || result == -Inf)\par
+        \{\par
+          return result;\par
+        \}\par
+        else\par
+        \{\par
+          sum += result;\par
+        \}\par
+      \}\par
+    \}\par
+    \par
+    //evaluate by diagonal (from top left)\par
+    for(int row = 0; row < B.length - 3; row++)\par
+    \{\par
+      for(int col = 0; col < B[0].length - 3; col++)\par
+      \{\par
+        int set = B[row][col] + B[row+1][col+1] + B[row+2][col+2] + B[row+3][col+3];\par
+        int result = evalHelper(B, set, row, col);\par
+        if(result == Inf || result == -Inf)\par
+        \{\par
+          return result;\par
+        \}\par
+        else\par
+        \{\par
+          sum += result;\par
+        \}\par
+      \}\par
+    \}\par
+    \par
+    //evaluate by diagonal (from bottom left)\par
+    for(int row = B.length - 1; row > 3; row--)\par
+    \{\par
+      for(int col = 0; col < B[0].length - 3; col++)\par
+      \{\par
+        int set = B[row][col] + B[row-1][col+1] + B[row-2][col+2] + B[row-3][col+3];\par
+        int result = evalHelper(B, set, row, col);\par
+        if(result == Inf || result == -Inf)\par
+        \{\par
+          return result;\par
+        \}\par
+        else\par
+        \{\par
+          sum += result;\par
+        \}\par
+      \}\par
+    \}\par
+    return sum;\par
+  \}\par
+  \par
+  \par
+  /* Prevents some repetition of code within the eval() method.\par
+   * @param int[][] B: playing board\par
+   * @param sum: sum of values of 4 consecutive spaces on board\par
+   * @param row: row index of 1st of these consecutive spaces\par
+   * @param col: column index of 1st of these consecutive spaces\par
+   * @return int:Inf if win, -Inf if loss, 1 if B[row][col] is Blue, -1 if B[row][col] is Red \par
+   */\par
+  public static int evalHelper(int[][] B, int sum, int row, int col)\par
+  \{\par
+    if(sum == 40)\par
+    \{\par
+      return Inf;\par
+    \}\par
+    else if(sum == -4)\par
+    \{\par
+      return -Inf;\par
+    \}\par
+    else\par
+    \{\par
+      if(B[row][col] == 10)\par
+      \{\par
+        return 1;\par
+      \}\par
+      if(B[row][col] == 1)\par
+      \{\par
+        return -1;\par
+      \}\par
+    \}\par
+    return 0; //necessary for compilation\par
+  \}\par
+\}\par
+}
+ 
