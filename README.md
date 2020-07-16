@@ -1,5 +1,5 @@
 # Connect 4
-Assignment for AP Computer Science class (2015)
+Assignment for AP Computer Science (2015)
 
 This package contains files necessary to run a game of Connect 4.
 Files in this code distribution:
