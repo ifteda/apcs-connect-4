@@ -2,13 +2,13 @@
 Assignment for AP Computer Science class (2015)
 
 This package contains files necessary to run a game of Connect 4.
-	Files in this code distribution:
-		- AIPlayer
-		- Connect4
-		- Player
-		- JBox
-		- JCanvas
-		- JEventQueue
+Files in this code distribution:
+- AIPlayer
+- Connect4
+- Player
+- JBox
+- JCanvas
+- JEventQueue
 
 ## Installation
 Open and compile the .java files in a Java Integrated Development Environment (e.g., Dr. Java, Eclipse, NetBeans, etc.). To play the game, run the Connect4 class.
@@ -30,8 +30,8 @@ Though the method move() in AIPlayer prioritizes winning moves and blocking losi
 ## Contact & Acknowledgements
 AIPlayer class: Ifteda Ahmed-Syed (ifteda@gmail.com)
 Connect 4 class:
-	- Ashley Hansberry (Ashley_Hansberry@loomis.org)
-	- Wayn Snyder (waynsnyder@gmail.com)
+- Ashley Hansberry (Ashley_Hansberry@loomis.org)
+- Wayn Snyder (waynsnyder@gmail.com)
 Player interface: Ashley Hansberry (Ashley_Hansberry@loomis.org)
 JBox, JCanvas, & JEventQueue: Mads Rosendahl (madsr@ruc.dk)
 
